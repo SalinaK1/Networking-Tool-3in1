@@ -1,6 +1,6 @@
 import scapy.all as scapy
 import argparse
-# from scapy.layers.net import IP, ICMP
+from scapy.layers.inet import IP, ICMP
 
 def get_argument():
     parser= argparse.ArgumentParser()
@@ -13,6 +13,7 @@ def get_argument():
         parser.error("[-] Please specify target IP address/ range. Use --help for more information.")       #Display the error mesage and quit the program if the argument is missing.
         print("2")
     return argument
+
 
 target = get_argument()
 print("3")
