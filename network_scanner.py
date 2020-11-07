@@ -19,7 +19,7 @@ def create_packet(ip):      # create packets to send.
     return ether_arp_frame
 
 def send_packet(packet):        # send ARP request and recieve response.
-    response_list = scapy.srp(packet, timeout = 2, verbose = False )[0]     # the first element has all the answered response list. 
+    response_list = scapy.srp(packet, timeout = 10, verbose = False )[0]     # the first element has all the answered response list. 
     return (response_list)
 
 def parse_response(response_list):      #parse the response of our previous ARP request and extract its IP address and MAC address only.
@@ -34,12 +34,13 @@ def display_result(result):
     print("| IP\t\t| MAC \t\t\t |")
     print("------------------------------------------")
     for device in result:
-        print("| " + device["ip"] + "\t| " + device["mac"] + "\t\t\t  |\n")
+        print("| " + device["ip"] + "\t| " + device["mac"] + "\t |")
+    print("------------------------------------------")
 
 target_IP = get_argument()
 # print (target_IP)
 if target_IP.target is not None:
-    packet = create_packet(target_IP)
+    packet = create_packet(target_IP.target)
     response_packets = send_packet(packet)
     result_devices = parse_response(response_packets)
     display_result(result_devices)
