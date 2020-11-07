@@ -19,7 +19,7 @@ def create_packet(ip):      # create packets to send.
     return ether_arp_frame
 
 def send_packet(packet):        # send ARP request and recieve response.
-    response_list = scapy.srp(packet, timeout = 10, verbose = False )[0]     # the first element has all the answered response list. 
+    response_list = scapy.srp(packet, timeout = 5, verbose = False )[0]     # the first element has all the answered response list. 
     return (response_list)
 
 def parse_response(response_list):      #parse the response of our previous ARP request and extract its IP address and MAC address only.
@@ -29,13 +29,25 @@ def parse_response(response_list):      #parse the response of our previous ARP 
         result.append(device)
     return result
 
+def get_client_OS(ip):      # get the OS of client in the
+    possible_ttl_values = {32 : "Windows", 60: "Mac OS", 64: "Linux", 128: "Windows", 255: "Linux 2.4 Kernal"}
+    sent_packet = IP(dst = str(ip)) / ICMP()
+    answer_packet = scapy.sr1(sent_packet, timeout = 2, verbose = False)
+    if answer_packet:
+        if answer_packet.ttl in possible_ttl_values:
+            return possible_ttl_values.get(answer_packet.ttl)
+        else:
+            return "Could not figure the OS"
+    else:
+        return "Packets could not be sent"
+
 def display_result(result):
-    print("------------------------------------------")
-    print("| IP\t\t| MAC \t\t\t |")
-    print("------------------------------------------")
+    print("-----------------------------------------------------------------------------------------")
+    print("| IP\t\t\t| MAC \t\t\t | Operating System \t\t\t|")
+    print("-----------------------------------------------------------------------------------------")
     for device in result:
-        print("| " + device["ip"] + "\t| " + device["mac"] + "\t |")
-    print("------------------------------------------")
+        print("| " + device["ip"] + "  \t| " + device["mac"] + "\t | " + get_client_OS(device["ip"]) + "  \t\t\t\t|")
+    print("-----------------------------------------------------------------------------------------")
 
 target_IP = get_argument()
 # print (target_IP)
