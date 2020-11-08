@@ -90,32 +90,41 @@ def send_mail(gmail_user, gmail_password, to, subject="(No Subject)", text="", h
 
 def monitor_uptime(url, recipients=None, gmail_user=None, gmail_password=None):     # Monitor a url to see if it is online.
     from datetime import datetime, timedelta
+    import time
     import http.client
     from urllib.parse import urlparse
 
     print("\nChecking if %s is online" % url)
-    site = urlparse(url)        # parse urls to components.
-    conn = http.client.HTTPConnection(site[1])      
-    conn.request("HEAD", site[2])       
-    status = conn.getresponse()
-    status_code = status.status
+    current_time = datetime.now()
+    while True:
+        site = urlparse(url)        # parse urls to components.
+        conn = http.client.HTTPConnection(site[1])      
+        conn.request("HEAD", site[2])       
+        status = conn.getresponse()
+        status_code = status.status
 
-    full_url = site.geturl()
-    clean_url = site.netloc + site.path     # Get the clean URL (without protocol)
+        full_url = site.geturl()
+        clean_url = site.netloc + site.path     # Get the clean URL (without protocol)
 
-    if status_code != 200 and status_code != 302:
-        print("\nSite is down with a %s error code\n" % status_code)
+        if status_code != 200 and status_code != 302:
+            time_difference = datetime.now() - current_time
+            down_time_seconds = time_difference.total_seconds()
+            down_time_minutes = int(down_time_seconds/60)
+            print("\nSite is down with a %s error code\n" % status_code)
 
-        if recipients and gmail_user and gmail_password:
-            subject = "Server is down!"
-            message_text = "%(site)s is down with status code %(code)s!" % {"site": full_url, "code": status_code,}
+            if recipients and gmail_user and gmail_password and (down_time_minutes in {1,5} or down_time_minutes % 10 == 0):
+                subject = "Server is down!"
+                message_text = "%(site)s is down with status code %(code)s!" % {"site": full_url, "code": status_code,}
 
-            # Send the message to all the recipients.
-            recipients = recipients if not isinstance(recipients, str) else [recipients]
-            for to_address in recipients:
-                send_mail(gmail_user, gmail_password, to_address, subject, message_text)
-            print("\nNotification sent!\n")
-        return False
-
-    print("\nSite is online (status 200)!\n")
-    return True
+                # Send the message to all the recipients.
+                recipients = recipients if not isinstance(recipients, str) else [recipients]
+                for to_address in recipients:
+                    try:
+                        send_mail(gmail_user, gmail_password, to_address, subject, message_text)
+                    except:
+                        pass
+                print("\nNotification sent!\n")
+        else: 
+            current_time = datetime.now()
+            print("\nSite is online (status 200)!")
+        time.sleep(1)
