@@ -49,10 +49,17 @@ def display_result(result):
         print("| " + device["ip"] + "  \t| " + device["mac"] + "\t | " + get_client_OS(device["ip"]) + "  \t\t\t\t|")
     print("-----------------------------------------------------------------------------------------")
 
-target_IP = get_argument()
-# print (target_IP)
-if target_IP.target is not None:
-    packet = create_packet(target_IP.target)
+# target_IP = get_argument()
+# if target_IP.target is not None:
+#     packet = create_packet(target_IP.target)
+#     response_packets = send_packet(packet)
+#     result_devices = parse_response(response_packets)
+#     display_result(result_devices)
+
+def IP_scanner(target_IP):
+    packet = create_packet(target_IP)
     response_packets = send_packet(packet)
     result_devices = parse_response(response_packets)
     display_result(result_devices)
+
+# IP_scanner("192.168.254.1/24")
