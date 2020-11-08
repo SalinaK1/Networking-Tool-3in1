@@ -96,6 +96,7 @@ def monitor_uptime(url, recipients=None, gmail_user=None, gmail_password=None): 
 
     print("\nChecking if %s is online" % url)
     current_time = datetime.now()
+    mail_sent = 0
     while True:
         site = urlparse(url)        # parse urls to components.
         conn = http.client.HTTPConnection(site[1])      
@@ -112,19 +113,26 @@ def monitor_uptime(url, recipients=None, gmail_user=None, gmail_password=None): 
             down_time_minutes = int(down_time_seconds/60)
             print("\nSite is down with a %s error code\n" % status_code)
 
-            if recipients and gmail_user and gmail_password and (down_time_minutes in {1,5} or down_time_minutes % 10 == 0):
+            if recipients and gmail_user and gmail_password and (down_time_minutes in (1,5) or (down_time_minutes > 1 and down_time_minutes % 10 == 0)):
                 subject = "Server is down!"
-                message_text = "%(site)s is down with status code %(code)s!" % {"site": full_url, "code": status_code,}
+                message_text = f"{full_url} is down with status code {status_code}for the past {down_time_minutes} minute." 
 
                 # Send the message to all the recipients.
                 recipients = recipients if not isinstance(recipients, str) else [recipients]
-                for to_address in recipients:
-                    try:
-                        send_mail(gmail_user, gmail_password, to_address, subject, message_text)
-                    except:
-                        pass
-                print("\nNotification sent!\n")
+                if mail_sent == 0:
+                    for to_address in recipients:
+                        try:
+                            send_mail(gmail_user, gmail_password, to_address, subject, message_text)
+                            mail_sent = 1
+                        except:
+                            pass
+                    print("\nNotification sent!\n")
+                else:
+                    mail_sent = mail_sent +1
+                if mail_sent > 32:
+                    mail_sent = 0
         else: 
             current_time = datetime.now()
             print("\nSite is online (status 200)!")
-        time.sleep(1)
+            mail_sent = 0
+        time.sleep(2)
