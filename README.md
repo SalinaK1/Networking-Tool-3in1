@@ -18,3 +18,5 @@ Pre-requisties:
         Make a .env file and store your gmail password there in the format 
                 PASSWORD = your_gmail_app_password
 
+
+
