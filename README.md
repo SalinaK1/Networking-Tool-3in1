@@ -19,4 +19,9 @@ Pre-requisties:
                 PASSWORD = your_gmail_app_password
 
 
+Instruction for running:
+
+1. Run the file networking.py with root priviledges.
+        sudo python3 networking.py      (For linux)
+
 
