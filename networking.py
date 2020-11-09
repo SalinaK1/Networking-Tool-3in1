@@ -1,6 +1,6 @@
 import os
 import sys
-from dotenv import load_dotenv
+from dotenv import load_dotenv      #I used dotenv for storing my gmail app password. You can skip if you wish to enter you password directly to the monitor_uptime() funstion as done below.
 load_dotenv()
 from urllib.request import Request, urlopen, URLError
 import http.client
@@ -30,12 +30,12 @@ while repeat:
             print("Invalid input")
     
     elif user_choice == 2:      # Server monitoring tool 
-        GMAIL_PASSWORD = os.getenv("PASSWORD")
+        GMAIL_PASSWORD = os.getenv("PASSWORD")      #this is just used for protecting my gmail password. You can skip. 
         required_url = input("Enter the url you want to monitor:  ")
         try:
             # request = Request(required_url)
             # response = urlopen(request)
-            site = urlparse(required_url)        # parse urls to components.
+            site = urlparse(required_url)        
             conn = http.client.HTTPConnection(site[1])      
             conn.request("HEAD", site[2])       
             status = conn.getresponse()
@@ -44,9 +44,9 @@ while repeat:
             print("The input url is invalid.")
         else:
             server_monitoring.monitor_uptime(required_url, 
-                ["sk02433018@student.ku.edu.np", "salina.koirala@aiesec.net"], 
-                "saleena.koirala1@gmail.com", 
-                GMAIL_PASSWORD)
+                ["reciever1@example.com", "reciever2@example.com"], 
+                "sender@example.com", 
+                "sender_gmail_password")
 
     elif user_choice == 3:      #Packet loss testing tool.
         target_IP = input("Enter the IP where you want to sent packet. (Leave blank for default i.e. Google DNS):  ")
