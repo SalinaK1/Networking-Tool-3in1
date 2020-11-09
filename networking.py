@@ -3,6 +3,8 @@ import sys
 from dotenv import load_dotenv
 load_dotenv()
 from urllib.request import Request, urlopen, URLError
+import http.client
+from urllib.parse import urlparse
 
 sys.path.append('network_scanner/')
 import network_scanner
@@ -31,8 +33,13 @@ while repeat:
         GMAIL_PASSWORD = os.getenv("PASSWORD")
         required_url = input("Enter the url you want to monitor:  ")
         try:
-            request = Request(required_url)
-            response = urlopen(request)
+            # request = Request(required_url)
+            # response = urlopen(request)
+            site = urlparse(required_url)        # parse urls to components.
+            conn = http.client.HTTPConnection(site[1])      
+            conn.request("HEAD", site[2])       
+            status = conn.getresponse()
+            status_code = status.status
         except:
             print("The input url is invalid.")
         else:

@@ -1,43 +1,3 @@
-# def color_print(msg, color=None):
-#     """
-#     Print colored console output.
-
-#     Color choices are:
-#         'gray'
-#         'green'
-#         'red'
-#         'yellow'
-#         'purple'
-#         'magenta'
-#         'cyan'
-
-#     Example::
-#         color_print("Here is a message...", 'red')
-#     """
-#     if not msg:
-#         print("You must pass a message to the color_print function!")
-#         return
-
-#     # Declare closing.
-#     end = "\033[0m"
-
-#     # Declare print colors.
-#     colors = {
-#         "gray": "\033[90m",
-#         "green": "\033[92m",
-#         "red": "\033[91m",
-#         "yellow": "\033[93m",
-#         "purple": "\033[94m",
-#         "magenta": "\033[95m",
-#         "cyan": "\033[96m",
-#     }
-
-#     if color in list(colors.keys()):
-#         print((colors[color] + str(msg) + end))
-#     else:
-#         print(msg)
-
-
 def send_mail(gmail_user, gmail_password, to, subject="(No Subject)", text="", html=None, attach=None):       #send email if the server is down via gmail.
 
     import smtplib
@@ -111,7 +71,7 @@ def monitor_uptime(url, recipients=None, gmail_user=None, gmail_password=None): 
             time_difference = datetime.now() - current_time
             down_time_seconds = time_difference.total_seconds()
             down_time_minutes = int(down_time_seconds/60)
-            print("\nSite is down with a %s error code\n" % status_code)
+            print("Site is down with a %s error code" % status_code)
 
             if recipients and gmail_user and gmail_password and (down_time_minutes in (1,5) or (down_time_minutes > 1 and down_time_minutes % 10 == 0)):
                 subject = "Server is down!"
@@ -133,6 +93,6 @@ def monitor_uptime(url, recipients=None, gmail_user=None, gmail_password=None): 
                     mail_sent = 0
         else: 
             current_time = datetime.now()
-            print("\nSite is online (status 200)!")
+            print("Site is online (status 200)!")
             mail_sent = 0
         time.sleep(2)

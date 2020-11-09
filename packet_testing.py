@@ -4,7 +4,7 @@ def packet_testing(ip = "8.8.8.8"):
 
     alive_packets = 0
     dead_packets= 0
-    packets_sent = 10
+    packets_sent = 100
 
     for i in range(0,packets_sent):
         packet = IP(dst = str(ip), ttl = 2) / ICMP()
